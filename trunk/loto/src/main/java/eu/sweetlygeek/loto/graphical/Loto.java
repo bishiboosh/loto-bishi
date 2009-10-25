@@ -13,6 +13,9 @@ import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
+import com.jgoodies.looks.plastic.PlasticLookAndFeel;
+import com.jgoodies.looks.windows.WindowsLookAndFeel;
+
 import eu.sweetlygeek.loto.enumeration.Type;
 import eu.sweetlygeek.loto.graphical.actions.ButtonClickedAction;
 import eu.sweetlygeek.loto.graphical.listener.SizeListener;
@@ -31,15 +34,13 @@ public class Loto extends JFrame {
 		super("Loto 2.0");
 		
 		try {
-			UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		} catch (InstantiationException e) {
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
+			UIManager.setLookAndFeel(new WindowsLookAndFeel());
 		} catch (UnsupportedLookAndFeelException e) {
-			// Nothing
+			try {
+				UIManager.setLookAndFeel(new PlasticLookAndFeel());
+			} catch (UnsupportedLookAndFeelException e1) {
+				// Nothing
+			}
 		}
 		
 		this.baseCarton = new BaseCarton();
