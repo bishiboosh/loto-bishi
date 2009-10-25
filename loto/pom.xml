@@ -3,10 +3,24 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>eu.sweetlygeek</groupId>
 	<artifactId>loto</artifactId>
-	<name>Loto</name>
+	<name>MyLoto</name>
 	<version>2.0</version>
 	<build>
 		<plugins>
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<configuration>
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+					</descriptorRefs>
+					<archive>
+						<manifest>
+							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+							<mainClass>eu.sweetlygeek.loto.graphical.Loto</mainClass>
+						</manifest>
+					</archive>
+				</configuration>
+			</plugin>
 			<plugin>
 				<artifactId>maven-jar-plugin</artifactId>
 				<configuration>
@@ -29,4 +43,11 @@
 			</plugin>
 		</plugins>
 	</build>
+	<dependencies>
+		<dependency>
+			<groupId>com.jgoodies</groupId>
+			<artifactId>looks</artifactId>
+			<version>2.2.2</version>
+		</dependency>
+	</dependencies>
 </project>
