@@ -54,13 +54,13 @@ public class ButtonClickedAction implements ActionListener {
 	private void toggleBackground()
 	{
 		Color foregroundColor = button.getForeground();
-		if (foregroundColor == Color.YELLOW)
+		if (foregroundColor == Color.RED)
 		{
 			button.setForeground(null);
 		}
 		else
 		{
-			button.setForeground(Color.YELLOW);
+			button.setForeground(Color.RED);
 		}
 	}
 
