@@ -6,23 +6,21 @@ import java.util.List;
  * @author bishiboosh
  *
  */
-public class Ligne extends LotoObject<Integer> {
+class Ligne extends LotoObject<Integer> {
 		
-	
-	public Ligne(List<Integer> content) {
+	public Ligne(final List<Integer> content) {
 		super(content);
 	}
-
-	public Boolean toggle(int num)
+	
+	public boolean toggle(final int num)
 	{
-		if (content.containsKey(num))
+		final Boolean cState = content.get(num);
+		boolean result = false;
+		if (Boolean.FALSE.equals(cState))
 		{
-			content.put(num, !content.get(num));
-			return isFull();
+			content.put(num, cState.equals(Boolean.TRUE) ? Boolean.FALSE : Boolean.TRUE);
+			result = isFull();
 		}
-		else
-		{
-			return null;
-		}
+		return result;
 	}
 }
