@@ -1,43 +1,43 @@
 package eu.sweetlygeek.loto.model;
 
-import java.util.Iterator;
+import static eu.sweetlygeek.loto.enumeration.Type.CARTON;
+import static eu.sweetlygeek.loto.enumeration.Type.LIGNE;
+import static eu.sweetlygeek.loto.enumeration.Type.RIEN;
+
 import java.util.List;
+import java.util.Map;
 
 import eu.sweetlygeek.loto.enumeration.Type;
-import eu.sweetlygeek.loto.utils.ImmutableSingletonMap;
 
-public class Carton extends LotoObject<Ligne> {
+/** Carton, constitué d'un ensemble de lignes.
+ * @author bishiboosh
+ *
+ */
+class Carton extends LotoObject<Ligne> {
 
-	private int numCarton;
+	private final int numCarton;
 
-	public Carton(List<Ligne> content, int numCarton) {
+	Carton(final List<Ligne> content, final int numCarton) {
 		super(content);
 		this.numCarton = numCarton;
 	}
+	
+	public int getNumCarton()
+	{
+		return this.numCarton;
+	}
 
-	public ImmutableSingletonMap<Type, Integer> toggle(int num) {
-		boolean lineFull = false;
-		Iterator<Ligne> lineIt = content.keySet().iterator();
-		while (lineIt.hasNext() && !lineFull)
+	public Type toggle(final int num) {
+		for (Map.Entry<Ligne, Boolean> entry : content.entrySet())
 		{
-			Ligne ligne = lineIt.next();
-			Boolean found = ligne.toggle(num);
-			if (found != null)
+			final Ligne ligne = entry.getKey();
+			if (ligne.toggle(num))
 			{
-				// On a trouvé le numéro dans la ligne, on regarde si la ligne est pleine
-				lineFull = found;
-				content.put(ligne, lineFull);
+				entry.setValue(Boolean.TRUE);
+				return isFull() ? CARTON : LIGNE;// NOPMD
 			}
 		}
-		if (lineFull)
-		{
-			Type status = isFull() ? Type.CARTON : Type.LIGNE;
-			return new ImmutableSingletonMap<Type, Integer>(status, numCarton);
-		}
-		else
-		{
-			return null;
-		}
+		return RIEN;
 	}
 
 	@Override

@@ -4,11 +4,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public abstract class LotoObject<T> {
+class LotoObject<T> {
 	
-	protected Map<T, Boolean> content;
+	protected final Map<T, Boolean> content;
 	
-	public LotoObject(List<T> content)
+	protected LotoObject(final List<T> content)
 	{
 		this.content = new HashMap<T, Boolean>();
 		for (T cObject : content)
@@ -24,9 +24,9 @@ public abstract class LotoObject<T> {
 	
 	public void clear()
 	{
-		for (T key : content.keySet())
+		for (Map.Entry<T, Boolean> entry : content.entrySet())
 		{
-			content.put(key, false);
+			entry.setValue(false);
 		}
 	}
 }
