@@ -1,23 +1,16 @@
-package eu.sweetlygeek.loto;
+package eu.sweetlygeek.loto.graphical;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Container;
-import java.awt.Font;
-import java.awt.FontMetrics;
 import java.awt.GridLayout;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
-import java.awt.geom.AffineTransform;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Locale;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -36,20 +29,23 @@ import org.apache.log4j.Logger;
 import eu.sweetlygeek.loto.enumeration.Type;
 import eu.sweetlygeek.loto.model.BaseCarton;
 
+/** Point d'entrée général.
+ * @author bishiboosh
+ *
+ */
 @SuppressWarnings("serial")
 public final class Loto extends JFrame {
 
 	private static final String LAF_ERROR = "Error while choosing LAF";
 
-	private final static Logger LOGGER = Logger.getLogger(Loto.class);
+	private static final Logger LOGGER = Logger.getLogger(Loto.class);
 
 	private BaseCarton baseCarton;
 	private final List<JButton> buttons;
 	private Type mode;
-	private final static Loto INSTANCE = new Loto();
+	private static final Loto INSTANCE = new Loto();
 
-	private Loto()
-	{
+	private Loto() {
 		super("Loto 2.0");
 
 		setLookAndFeel();
@@ -61,18 +57,15 @@ public final class Loto extends JFrame {
 		final JPanel buttonPanel = createButtonPanel();
 		content.add(barreMenu, BorderLayout.NORTH);
 		content.add(buttonPanel, BorderLayout.CENTER);
-		addComponentListener(new SizeListener());
+		addComponentListener(new SizeListener(buttons));
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		pack();
 	}
 
-	private void setLookAndFeel()
-	{
+	private void setLookAndFeel() {
 		String laf = UIManager.getCrossPlatformLookAndFeelClassName();
-		for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels())
-		{
-			if ("nimbus".equalsIgnoreCase(info.getName()))
-			{
+		for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+			if ("nimbus".equalsIgnoreCase(info.getName())) {
 				laf = info.getClassName();
 			}
 		}
@@ -96,8 +89,7 @@ public final class Loto extends JFrame {
 		return result;
 	}
 
-	private JMenu createFileMenu()
-	{
+	private JMenu createFileMenu() {
 		final JMenu result = new JMenu("Fichier");
 		final JMenuItem open = new JMenuItem("Ouvrir un fichier");
 		open.addActionListener(new ActionListener() {
@@ -106,15 +98,16 @@ public final class Loto extends JFrame {
 				try {
 					final JFileChooser fc = new JFileChooser();
 					final int result = fc.showOpenDialog(INSTANCE);
-					if (result == JFileChooser.APPROVE_OPTION)
-					{
+					if (result == JFileChooser.APPROVE_OPTION) {
 						baseCarton = new BaseCarton(fc.getSelectedFile());
 					}
 				} catch (HeadlessException e1) {
 					LOGGER.error("Error with file dialog", e1);
 				} catch (FileNotFoundException e1) {
 					LOGGER.error("Error with file dialog", e1);
-					JOptionPane.showMessageDialog(INSTANCE, "Erreur sur le fichier", "Erreur", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(INSTANCE, 
+							"Erreur sur le fichier",
+							"Erreur", JOptionPane.ERROR_MESSAGE);
 				}
 			}
 		});
@@ -138,16 +131,14 @@ public final class Loto extends JFrame {
 		return result;
 	}
 
-	private JMenu createPlayMenu()
-	{
+	private JMenu createPlayMenu() {
 		final JMenu result = new JMenu("Partie");
 		final JMenuItem newPlay = new JMenuItem("Nouvelle partie");
 		newPlay.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
 				baseCarton.clear();
-				for (JButton button : buttons)
-				{
+				for (JButton button : buttons) {
 					button.setBackground(null);
 				}
 			}
@@ -158,7 +149,9 @@ public final class Loto extends JFrame {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
 				final Object[] choix = { "Carton", "Ligne" };
-				final String answer = (String) JOptionPane.showInputDialog(INSTANCE, null, "Choisir mode", JOptionPane.QUESTION_MESSAGE, null, choix, "Ligne");
+				final String answer = (String) JOptionPane.showInputDialog(INSTANCE,
+						null, "Choisir mode", JOptionPane.QUESTION_MESSAGE,
+						null, choix, "Ligne");
 				mode = "Carton".equals(answer) ? Type.CARTON : Type.LIGNE;
 			}
 		});
@@ -168,8 +161,7 @@ public final class Loto extends JFrame {
 
 	private JPanel createButtonPanel() {
 		final JPanel result = new JPanel(new GridLayout(9, 10));
-		for (int i = 1; i <= 90; i++)
-		{
+		for (int i = 1; i <= 90; i++) {
 			final JButton button = createButton(i);
 			buttons.add(button);
 			result.add(button);
@@ -177,27 +169,24 @@ public final class Loto extends JFrame {
 		return result;
 	}
 
-	private JButton createButton(final int num)
-	{
+	private JButton createButton(final int num) {
 		final JButton button = new JButton(String.valueOf(num));
 		button.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(final ActionEvent event) {
-				if (baseCarton.isEmpty())
-				{
-					JOptionPane.showMessageDialog(INSTANCE, "Il n'y a pas de cartons chargés.\nVeuillez charger au moins un fichier de cartons", "Pas de cartons", JOptionPane.WARNING_MESSAGE);
-				}			
-				else
-				{
+				if (baseCarton.isEmpty()) {
+					JOptionPane.showMessageDialog(INSTANCE,
+							"Il n'y a pas de cartons chargés.\nVeuillez charger au moins un fichier de cartons",
+							"Pas de cartons", JOptionPane.WARNING_MESSAGE);
+				} else {
 					final JButton source = (JButton) event.getSource();
 					source.setBackground(source.getBackground().equals(Color.YELLOW) ? null : Color.YELLOW);
 					final Collection<Integer> winners = baseCarton.toggle(num, mode);
-					if (!winners.isEmpty())
-					{
-						final StringBuilder buffer = new StringBuilder(winners.size() == 1 ? "Carton gagnant : " : "Cartons gagnants : ");
-						for (Integer i : winners)
-						{
+					if (!winners.isEmpty()) {
+						final StringBuilder buffer = new StringBuilder(winners.size() == 1 
+								? "Carton gagnant : " : "Cartons gagnants : ");
+						for (Integer i : winners) {
 							buffer.append(i.toString());
 							buffer.append(" ");
 						}
@@ -209,67 +198,10 @@ public final class Loto extends JFrame {
 		return button;
 	}
 
+	/** Méthode globale.
+	 * @param args arguments
+	 */
 	public static void main(final String[] args) {
 		INSTANCE.setVisible(true);
-	}
-
-	private class SizeListener implements ComponentListener
-	{
-		private int pHeight;
-		private int pWidth;
-
-		@Override
-		public void componentShown(final ComponentEvent e) {
-			final Component c = e.getComponent();
-			this.pWidth = c.getWidth();
-			this.pHeight = c.getHeight();
-		}
-		@Override
-		public void componentResized(final ComponentEvent e) {
-			final Component c = e.getComponent();
-			if (c.isShowing() && pHeight != 0 && pWidth != 0)
-			{
-				resizeButtons(buttons);
-			}
-			this.pWidth = c.getSize().width;
-			this.pHeight = c.getSize().height;					
-		}
-
-		private void resizeButtons(final List<JButton> buttons)
-		{
-			final double mult = computeMult(buttons.get(buttons.size() - 1)) * 0.8;
-			for (JButton button : buttons)
-			{
-				resizeButton(button, mult);
-			}
-		}
-
-		private double computeMult(final JButton button)
-		{
-			button.setFont(button.getFont().deriveFont(new AffineTransform()));
-			final FontMetrics fm = button.getGraphics().getFontMetrics();
-			final double cHeight = fm.getHeight();
-			final double cWidth = fm.stringWidth(button.getText());
-			final double bHeight = button.getHeight();
-			final double bWidth = button.getWidth();
-			final double mHeight = (bHeight - 10) / cHeight;
-			final double mWidth = (bWidth - 10) / cWidth;
-			return Math.min(mHeight, mWidth);
-		}
-
-		private void resizeButton(final JButton button, final double mult)
-		{
-			final Font newFont = button.getFont().deriveFont(AffineTransform.getScaleInstance(mult, mult));
-			button.setFont(newFont);
-		}
-
-		@Override
-		public void componentMoved(final ComponentEvent e) {
-			//Nothing
-		}
-		@Override
-		public void componentHidden(final ComponentEvent e) {
-			// Nothing
-		}
 	}
 }

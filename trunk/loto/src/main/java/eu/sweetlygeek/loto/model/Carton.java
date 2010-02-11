@@ -9,7 +9,7 @@ import java.util.Map;
 
 import eu.sweetlygeek.loto.enumeration.Type;
 
-/** Carton, constitué d'un ensemble de lignes.
+/** Carton, constitué d'un ensemble de 3 lignes.
  * @author bishiboosh
  *
  */
@@ -22,19 +22,16 @@ class Carton extends LotoObject<Ligne> {
 		this.numCarton = numCarton;
 	}
 	
-	public int getNumCarton()
-	{
+	public int getNumCarton() {
 		return this.numCarton;
 	}
 
 	public Type toggle(final int num) {
-		for (Map.Entry<Ligne, Boolean> entry : content.entrySet())
-		{
+		for (Map.Entry<Ligne, Boolean> entry : content.entrySet()) {
 			final Ligne ligne = entry.getKey();
-			if (ligne.toggle(num))
-			{
+			if (ligne.toggle(num)) {
 				entry.setValue(Boolean.TRUE);
-				return isFull() ? CARTON : LIGNE;// NOPMD
+				return isFull() ? CARTON : LIGNE; // NOPMD
 			}
 		}
 		return RIEN;
@@ -43,8 +40,7 @@ class Carton extends LotoObject<Ligne> {
 	@Override
 	public void clear() {
 		super.clear();
-		for (Ligne ligne : content.keySet())
-		{
+		for (Ligne ligne : content.keySet()) {
 			ligne.clear();
 		}
 	}
