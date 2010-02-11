@@ -8,24 +8,19 @@ class LotoObject<T> {
 	
 	protected final Map<T, Boolean> content;
 	
-	protected LotoObject(final List<T> content)
-	{
+	protected LotoObject(final List<T> content) {
 		this.content = new HashMap<T, Boolean>();
-		for (T cObject : content)
-		{
+		for (T cObject : content) {
 			this.content.put(cObject, false);
 		}
 	}
 	
-	protected boolean isFull()
-	{
+	protected boolean isFull() {
 		return !content.values().contains(false);
 	}
 	
-	public void clear()
-	{
-		for (Map.Entry<T, Boolean> entry : content.entrySet())
-		{
+	public void clear() {
+		for (Map.Entry<T, Boolean> entry : content.entrySet()) {
 			entry.setValue(false);
 		}
 	}
