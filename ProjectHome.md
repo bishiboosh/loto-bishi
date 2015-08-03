@@ -1,0 +1,1 @@
+A simple loto program, with simple input datas
